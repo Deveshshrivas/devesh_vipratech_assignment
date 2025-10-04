@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Environment
+.env
+.venv
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+
+# Docker
+.dockerignore
+
+# Git
+.git
+.gitignore
+
+# Documentation (keep in image)
+# README.md
+# QUICKSTART.md
+# TROUBLESHOOTING.md
+
+# Test files
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node modules (if any)
+node_modules/
+npm-debug.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~

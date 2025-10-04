@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}System Status{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">System Status Check</h1>
+        
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Products</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Count:</strong> {{ products|length }}</p>
+                <ul>
+                    {% for product in products %}
+                    <li>{{ product.name }} - ${{ product.price }}</li>
+                    {% empty %}
+                    <li>No products found</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Orders</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Count:</strong> {{ orders|length }}</p>
+                <ul>
+                    {% for order in orders %}
+                    <li>Order #{{ order.id }} - ${{ order.total_amount }} ({{ order.status }})</li>
+                    {% empty %}
+                    <li>No orders found</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Stripe Configuration</h5>
+            </div>
+            <div class="card-body">
+                {% if stripe_configured %}
+                <p class="text-success">✓ Stripe is configured</p>
+                <p><small>Public Key: {{ stripe_public_key|slice:":20" }}...</small></p>
+                {% else %}
+                <p class="text-danger">✗ Stripe is NOT configured</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'index' %}" class="btn btn-primary">Back to Shop</a>
+    </div>
+</div>
+{% endblock %}

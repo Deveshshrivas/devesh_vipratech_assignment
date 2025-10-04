@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Success{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-success">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h1 class="card-title text-success mb-4">Payment Successful!</h1>
+                <p class="card-text fs-5 mb-4">
+                    Thank you for your purchase. Your order has been confirmed.
+                </p>
+
+                {% if order %}
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Order Details #{{ order.id }}</h5>
+                    </div>
+                    <div class="card-body text-start">
+                        <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y - g:i A" }}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge bg-success">{{ order.status|upper }}</span>
+                        </p>
+                        
+                        <hr>
+                        
+                        <h6>Items Ordered:</h6>
+                        <ul class="list-group mb-3">
+                            {% for item in order.items.all %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ item.quantity }}x {{ item.product_name }}
+                                <span class="badge bg-primary rounded-pill">${{ item.subtotal }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <div class="text-end">
+                            <h4>Total: <span class="text-success">${{ order.total_amount }}</span></h4>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="mt-4">
+                    <a href="{% url 'index' %}" class="btn btn-primary btn-lg me-2">
+                        <i class="bi bi-house"></i> Back to Home
+                    </a>
+                    <a href="{% url 'my_orders' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-bag-check"></i> View All Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop - Home{% endblock %}
+
+{% block content %}
+
+{% if not stripe_configured %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <strong>Stripe Not Configured:</strong> Add your Stripe test keys to the <code>.env</code> file to enable checkout.
+    Get keys from <a href="https://dashboard.stripe.com/test/apikeys" target="_blank" class="alert-link">Stripe Dashboard</a>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<div class="row mb-5">
+    <div class="col-12">
+        <h1 class="text-center mb-4">
+            <i class="bi bi-cart3"></i> Welcome to Our Shop
+        </h1>
+        <p class="text-center text-muted">Select products and quantities, then click Buy to checkout</p>
+    </div>
+</div>
+
+<!-- Products Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="bi bi-box-seam"></i> Our Products
+        </h2>
+    </div>
+
+    <form method="POST" action="{% url 'create_checkout_session' %}">
+        {% csrf_token %}
+        
+        <div class="row g-4 mb-4">
+            {% for product in products %}
+            <div class="col-md-4">
+                <div class="card product-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.description }}</p>
+                        <p class="card-text">
+                            <strong class="text-primary fs-4">${{ product.price }}</strong>
+                        </p>
+                        <div class="mb-3">
+                            <label for="quantity_{{ product.id }}" class="form-label">Quantity:</label>
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                id="quantity_{{ product.id }}" 
+                                name="quantity_{{ product.id }}" 
+                                min="0" 
+                                max="10" 
+                                value="0"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-credit-card"></i> Buy Now
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<hr class="my-5">
+
+<!-- My Orders Section -->
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="bi bi-bag-check"></i> My Orders
+        </h2>
+    </div>
+
+    {% if orders %}
+        {% for order in orders %}
+        <div class="col-12 mb-3">
+            <div class="card order-card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="card-title">
+                                Order #{{ order.id }}
+                                <span class="badge bg-success">{{ order.status|upper }}</span>
+                            </h5>
+                            <p class="card-text mb-2">
+                                <strong>Date:</strong> {{ order.created_at|date:"F d, Y - g:i A" }}
+                            </p>
+                            <p class="card-text mb-2">
+                                <strong>Items:</strong>
+                            </p>
+                            <ul class="list-unstyled ms-3">
+                                {% for item in order.items.all %}
+                                <li>
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    {{ item.quantity }}x {{ item.product_name }} 
+                                    - ${{ item.subtotal }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <h3 class="text-success mb-0">
+                                <strong>Total: ${{ order.total_amount }}</strong>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No orders yet. Make your first purchase!
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+{% endblock %}
